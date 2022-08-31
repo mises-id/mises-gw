@@ -3,7 +3,5 @@ dist
 browser/*
 vsrc/store/generated
 secret.yml
-/.vscode
-/build
 .DS_Store
 *.zip
