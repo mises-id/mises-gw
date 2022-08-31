@@ -86,7 +86,7 @@ export const useCalcVotingPower = () => {
   return init()
 }
 import jscrypto from 'jscrypto'
-import {Buffer} from 'Buffer'
+import { Buffer } from 'buffer'
 export const rawAddress = (key) => {
   if(!key) return []
   var pubkeyData = Buffer.from(key, 'base64');
