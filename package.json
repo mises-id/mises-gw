@@ -8,7 +8,7 @@
     "setup": "yarn install && yarn setup:postinstall",
     "setup:postinstall": "yarn patch-package",
     "dev": "vite --mode production",
-    "build": "vite build",
+    "build": "vite build --mode production",
     "serve": "vite preview",
     "test": "vite -v"
   },
