@@ -12,7 +12,7 @@
             <a href="https://www.mises.site" target="_blank" class="site">https://www.mises.site</a>
           </div>
           <div class="flex download-app">
-            <a href="https://d48fg6wpq9lc4.cloudfront.net/playstore/222102110.apk" target="_blank" class="flex btn download">
+            <a href="https://d48fg6wpq9lc4.cloudfront.net/playstore/22102616.apk" target="_blank" class="flex btn download">
               <img src="/images/index/download@2x.png" alt="" >
               <span>Download</span>
             </a>
