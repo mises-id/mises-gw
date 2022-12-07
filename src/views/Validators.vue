@@ -10,8 +10,11 @@
           :bordered="false"
           rowKey="address"
           :customRow="handleClickRow"
-          :pagination="false"
-
+          :pagination="{
+            total: total,
+            pageSize: pageSize,
+            current: pages,
+          }"
           :scroll="{x:1000}"
           :rowClassName="(_record, index) => (index % 2 === 1 ? 'table-striped' : undefined)"
         ></a-table>
@@ -37,14 +40,13 @@ export default {
     return {
       validators: [],
       pages: 1,
+      total: 0,
+      pageSize: 100,
       loading: false,
       columns: [
         {
           title: 'Rank',
-          dataIndex: 'index',
-          customRender: ({ index }) => {
-            return `#${index + 1}`
-          }
+          dataIndex: 'rank'
         },
         {
           title: 'Moniker',
@@ -91,42 +93,60 @@ export default {
       ]
     }
   },
-  computed: {
-    page() {
-      return parseInt(this.$route.params.page) || 1
-    }
-  },
   async created() {
-    this.loading = true
-    const {
-      data: { info: validators }
-    } = await axios.get(this.$store.getters['common/env/apiCosmos'] + '/cosmos/slashing/v1beta1/signing_infos')
-    const page = await axios.get(this.$store.getters['common/env/apiCosmos'] + '/cosmos/staking/v1beta1/validators')
-		const calcRate = getCalcVotingPowerRate(page.data.validators)
-    for (let validator_meta of page.data.validators) {
-			const voting_power_rate = calcRate(validator_meta.operator_address)
-      const info = validators?.find(({ address }) => address === valConsAddress(validator_meta)) || {}
-      const uptime = uptime_estimated(info);
-
-      const bondedMIS = getBondedMISCount(page.data.validators, validator_meta.operator_address)
-			// console.log(info)
-      const validator = {
-        moniker: validator_meta.description.moniker,
-        address: validator_meta.operator_address,
-        status: !validator_meta.jailed,
-        voting_power: new BigNumber(voting_power_rate).times(100).toFixed(2),
-        proposer_priority: validator_meta.proposer_priority,
-        first_block: info?.start_height,
-				last_block: new BigNumber(info?.start_height).plus(info?.index_offset).plus(info?.missed_blocks_counter).toString(),
-        uptime:`${uptime&&new BigNumber(uptime).times(100).toFixed(2)}%`,
-        bondedMIS:`${bondedMIS}MIS`,
-      }
-      this.validators.push(validator)
-    }
-		this.validators.sort((a,b)=>a.voting_power - b.voting_power>0?-1:1)
-    this.loading = false
+    this.getData()
   },
   methods: {
+    async getData(){
+      this.loading = true
+      const {
+        data: { info: validators }
+      } = await axios.get(this.$store.getters['common/env/apiCosmos'] + '/cosmos/slashing/v1beta1/signing_infos');
+      const pageLimit = this.pages * this.pageSize - this.pageSize;
+      const page = await axios.get(this.$store.getters['common/env/apiCosmos'] + '/cosmos/staking/v1beta1/validators',{
+        params: {
+          "pagination.offset": pageLimit
+        }
+      })
+      this.total = page.data.pagination.total;
+      const calcRate = getCalcVotingPowerRate(page.data.validators)
+      this.validators = [];
+      for (let validator_meta of page.data.validators) {
+        const voting_power_rate = calcRate(validator_meta.operator_address)
+        const info = validators?.find(({ address }) => address === valConsAddress(validator_meta)) || {}
+        const uptime = uptime_estimated(info);
+
+        const bondedMIS = getBondedMISCount(page.data.validators, validator_meta.operator_address)
+        // console.log(info)
+        const validator = {
+          moniker: validator_meta.description.moniker,
+          address: validator_meta.operator_address,
+          status: !validator_meta.jailed,
+          voting_power: new BigNumber(voting_power_rate).times(100).toFixed(2),
+          proposer_priority: validator_meta.proposer_priority,
+          first_block: info?.start_height,
+          last_block: info?.start_height ? new BigNumber(info?.start_height).plus(info?.index_offset).plus(info?.missed_blocks_counter).toString() : '',
+          uptime:`${uptime&&new BigNumber(uptime).times(100).toFixed(2)}%`,
+          bondedMIS:`${bondedMIS}MIS`,
+        }
+        this.validators.push(validator)
+      }
+      this.validators.sort((a,b)=>a.voting_power - b.voting_power>0?-1:1)
+      console.log(pageLimit)
+      this.validators = this.validators.map((validator,index)=>{
+        return {
+          ...validator,
+          rank: `#${pageLimit+ (index + 1)}`
+        }
+      })
+      this.loading = false
+    },
+
+    handleChange(val){
+      this.pages = val.current;
+      this.getData()
+    },
+
     handleClickRow(record) {
       return {
         onClick: () => {
