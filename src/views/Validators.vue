@@ -90,13 +90,19 @@ export default {
             )
           }
         }
-      ]
+      ],
+      allValidators: []
     }
   },
   async created() {
     this.getData()
   },
   methods: {
+    uniqueFunc(arr, uniId){
+      const res = new Map();
+      return arr.filter((item) => !res.has(item[uniId]) && res.set(item[uniId], 1));
+    },
+
     async getData(){
       this.loading = true
       const {
@@ -109,14 +115,20 @@ export default {
         }
       })
       this.total = page.data.pagination.total;
-      const calcRate = getCalcVotingPowerRate(page.data.validators)
+      
       this.validators = [];
+
+      this.allValidators = this.uniqueFunc([...this.allValidators, ...page.data.validators], 'operator_address')
+
+      const calcRate = getCalcVotingPowerRate(this.allValidators)
+
       for (let validator_meta of page.data.validators) {
         const voting_power_rate = calcRate(validator_meta.operator_address)
+
         const info = validators?.find(({ address }) => address === valConsAddress(validator_meta)) || {}
         const uptime = uptime_estimated(info);
 
-        const bondedMIS = getBondedMISCount(page.data.validators, validator_meta.operator_address)
+        const bondedMIS = getBondedMISCount(this.allValidators, validator_meta.operator_address)
         // console.log(info)
         const validator = {
           moniker: validator_meta.description.moniker,
@@ -132,7 +144,7 @@ export default {
         this.validators.push(validator)
       }
       this.validators.sort((a,b)=>a.voting_power - b.voting_power>0?-1:1)
-      console.log(pageLimit)
+
       this.validators = this.validators.map((validator,index)=>{
         return {
           ...validator,
