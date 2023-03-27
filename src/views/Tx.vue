@@ -40,6 +40,7 @@ export default {
     this.loading = true
     try {
       const res = await getTx({ hash: this.$route.params.txhash })
+      console.log(res)
       this.block = [
         {
           title: 'Transaction Hash',
@@ -91,7 +92,12 @@ export default {
         },
         {
           title: 'To',
-          value: res.tx_msg?.to_address ?? '-'
+          render: (item) => {
+            const message = this.messageType(res.tx_result.tx.body.messages)
+            return h("div", {
+                class: "value"
+              }, message === "Reinvest" ? res.tx_msg?.from_address : res.tx_msg?.to_address ?? '-');
+          }
         },
         {
           title: 'Value',
@@ -127,6 +133,35 @@ export default {
     } finally {
       this.loading = false
     }
+  },
+  methods: {
+    messageType(messages) {
+      let message = "";
+      messages.forEach((element) => {
+        if (!message) {
+          message = element["@type"];
+        } else {
+          if (
+            message ===
+              "/cosmos.distribution.v1beta1.MsgWithdrawDelegatorReward" &&
+            element["@type"] === "/cosmos.staking.v1beta1.MsgDelegate"
+          ) {
+            message = "/cosmos.distribution.v1beta1.MsgReinvest";
+          }
+        }
+      });
+      // const text = messages[messages.length - 1]["@type"];
+      const typeParams = {
+        "/cosmos.bank.v1beta1.MsgSend": "Transfer",
+        "/cosmos.staking.v1beta1.MsgDelegate": "Delegate",
+        "/cosmos.staking.v1beta1.MsgUndelegate": "Undelegate",
+        "/cosmos.staking.v1beta1.MsgBeginRedelegate": "Redelegate",
+        "/cosmos.distribution.v1beta1.MsgWithdrawDelegatorReward":
+          "Withdraw Rewards",
+        "/cosmos.distribution.v1beta1.MsgReinvest": "Reinvest",
+      };
+      return typeParams[message];
+    },
   }
 }
 </script>
