@@ -20,10 +20,10 @@
               <img src="/images/index/GooglePlay@2x.png" alt="" >
               <span>Android</span>
             </a>
-            <a href="https://testflight.apple.com/join/Tk1BxD1i" target="_blank"  class="flex btn store">
+            <!-- <a href="https://testflight.apple.com/join/Tk1BxD1i" target="_blank"  class="flex btn store">
               <img src="/images/index/iOS@2x.png" alt="" >
               <span>iOS</span>
-            </a>
+            </a> -->
           </div>
         </div>
         <div class="icons">
