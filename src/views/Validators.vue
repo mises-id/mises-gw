@@ -103,6 +103,16 @@ export default {
       return arr.filter((item) => !res.has(item[uniId]) && res.set(item[uniId], 1));
     },
 
+    async getAllValidators(total){
+      const page = await axios.get(this.$store.getters['common/env/apiCosmos'] + '/cosmos/staking/v1beta1/validators',{
+        params: {
+          "pagination.offset": 0,
+          'pagination.limit': total
+        }
+      })
+      return page.data.validators
+    },
+
     async getData(){
       this.loading = true
       const {
@@ -118,8 +128,7 @@ export default {
       
       this.validators = [];
 
-      this.allValidators = this.uniqueFunc([...this.allValidators, ...page.data.validators], 'operator_address')
-
+      this.allValidators = await this.getAllValidators(this.total)
       const calcRate = getCalcVotingPowerRate(this.allValidators)
 
       for (let validator_meta of page.data.validators) {
