@@ -2,12 +2,7 @@
   <div>
     <div class="homepage">
       <p class="welcome">The Mises Blockchain Explorer</p>
-      <div class="search">
-        <input type="text" placeholder="Search by Txn Hash/Block Height/Address" @keyup="getKeyUp" v-model="search" />
-        <div class="search-btn" @click="getText">
-          <img src="/images/index/search@2x.png" alt="" />
-        </div>
-      </div>
+      <mises-search />
       <div class="mises-stats">
         <div class="flex stats-item">
           <div class="flex stats-item-icon-box">
@@ -112,9 +107,10 @@ import dayjs from 'dayjs'
 import BigNumber from 'bignumber.js'
 import { formatTime, shortenAddress } from '../utils/plugins/index'
 import { Skeleton } from 'ant-design-vue'
+import MisesSearch from '../components/MisesSearch/MisesSearch.vue'
 export default {
   components: {
-    Skeleton
+    Skeleton, MisesSearch
   },
   name: 'Portfolio',
   data() {
@@ -220,27 +216,6 @@ export default {
         })
       })
     },
-    getKeyUp(val: KeyboardEvent) {
-      if (val.code.toLocaleLowerCase() === 'enter') {
-        this.getText()
-      }
-    },
-    getText() {
-      const hashLength = 64
-      const addressLength = 44
-      const blockHeight = (number: string) => !new BigNumber(number).isNaN()
-      if (this.search.length === hashLength) {
-        this.$router.push(`/tx/${this.search}`)
-        return
-      }
-      if (this.search.length === addressLength) {
-        this.$router.push(`/holders/${this.search}`)
-        return
-      }
-      if (blockHeight(this.search)) {
-        this.$router.push(`/block/${this.search}`)
-      }
-    },
     holder(item) {
       this.$router.push(`/holders/${item.misesid}`)
     },
@@ -278,42 +253,6 @@ export default {
     margin: 0;
     font-size: 22px;
     font-family: 'hlt-75';
-  }
-  .search {
-    margin: 22px auto 0;
-    display: flex;
-    justify-content: center;
-    input {
-      height: 44px;
-      background: #ffffff;
-      border-radius: 5px;
-      width: 596px;
-      outline: none;
-      border: none;
-      padding-left: 16px;
-      font-size: 16px;
-      font-family: 'hlt-55';
-      position: relative;
-      right: -6px;
-      color: #16161d;
-      &::placeholder {
-        color: #ccc;
-      }
-    }
-    .search-btn {
-      border-radius: 5px;
-      background: #5d61ff;
-      width: 50px;
-      height: 44px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      img {
-        width: 16px;
-        height: 16px;
-      }
-    }
   }
 }
 .mises-stats {
@@ -407,25 +346,6 @@ export default {
     }
     .homepage {
       height: 200px;
-      .search {
-        margin: 22px auto 0;
-        display: flex;
-        justify-content: center;
-        input {
-          width: 80vw;
-          height: 32px;
-          padding-left: 8px;
-          font-size: 12px;
-        }
-        .search-btn {
-          width: 40px;
-          height: 32px;
-          img {
-            width: 12px;
-            height: 12px;
-          }
-        }
-      }
     }
   }
 }

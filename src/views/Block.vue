@@ -42,6 +42,12 @@ export default {
   created() {
 		this.init()
 	},
+
+  watch: {
+    '$route.params.block'(val) {
+      this.init()
+    }
+  },
   methods: {
     async init() {
       this.loading = true

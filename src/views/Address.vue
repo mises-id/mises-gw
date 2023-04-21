@@ -137,59 +137,11 @@ export default {
     };
   },
   async created() {
-    this.loading = true;
-    try {
-      const res = await getAddress({ misesid: this.$route.params.misesid });
-      const username = res.name_tag;
-      const that = this;
-      this.block = [
-        {
-          title: "Address",
-          value: res.misesid,
-        },
-        {
-          title: "Name Tag",
-          value: username,
-        },
-        {
-          title: "Register Time",
-          value: res.user_ext.register_time
-            ? dayjs(res.user_ext.register_time).format("M/DD/YYYY")
-            : "-",
-        },
-        {
-          title: "Balance",
-          value: `${res.user_ext.quantity}MIS`,
-        },
-        {
-          title: "Social Relationships",
-          value: res.user_ext.social_relationships,
-        },
-      ] as dataItem[];
-      if (res.user_ext.validator) {
-        this.block.unshift({
-          title: "Validator Address",
-          value: res.user_ext.validator.operator_address,
-          render({ value }) {
-            return h(
-              "span",
-              {
-                className: "active",
-                onClick: () => {
-                  that.$router.push({
-                    path: `/validators/${res.user_ext.validator.operator_address}`,
-                  });
-                },
-              },
-              value
-            );
-          },
-        });
-      }
-      this.username = username;
-      this.getTxsList();
-    } finally {
-      this.loading = false;
+    this.initPage()
+  },
+  watch:{
+    '$route.params.misesid'(val){
+      this.initPage()
     }
   },
   methods: {
@@ -260,6 +212,62 @@ export default {
       };
       return typeParams[message];
     },
+    async initPage(){
+      this.loading = true;
+      try {
+        const res = await getAddress({ misesid: this.$route.params.misesid });
+        const username = res.name_tag;
+        const that = this;
+        this.block = [
+          {
+            title: "Address",
+            value: res.misesid,
+          },
+          {
+            title: "Name Tag",
+            value: username,
+          },
+          {
+            title: "Register Time",
+            value: res.user_ext.register_time
+              ? dayjs(res.user_ext.register_time).format("M/DD/YYYY")
+              : "-",
+          },
+          {
+            title: "Balance",
+            value: `${res.user_ext.quantity}MIS`,
+          },
+          {
+            title: "Social Relationships",
+            value: res.user_ext.social_relationships,
+          },
+        ] as dataItem[];
+        if (res.user_ext.validator) {
+          this.block.unshift({
+            title: "Validator Address",
+            value: res.user_ext.validator.operator_address,
+            render({ value }) {
+              return h(
+                "span",
+                {
+                  className: "active",
+                  onClick: () => {
+                    that.$router.push({
+                      path: `/validators/${res.user_ext.validator.operator_address}`,
+                    });
+                  },
+                },
+                value
+              );
+            },
+          });
+        }
+        this.username = username;
+        this.getTxsList();
+      } finally {
+        this.loading = false;
+      }
+    }
   },
 };
 </script>

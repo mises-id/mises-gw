@@ -73,6 +73,7 @@
 @media (max-width: 768px) {
   $fullWidth: 90vw;
   body{
+    min-width: 100% !important;
     .content{
       width: 100%;
       margin: 0 auto;
@@ -97,6 +98,7 @@
 :root{
   body{
     background-color: #f8f8f8;
+    min-width: 1240px;
   }
   .ant-table-row{
     background-color: #fcfcfc;
