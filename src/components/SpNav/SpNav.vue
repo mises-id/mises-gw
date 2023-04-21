@@ -2,11 +2,16 @@
   <div>
     <Suspense><SpSystemBar /></Suspense>
     <div class="navbar-wrapper">
-      <div class="navbar-section content">
+      <div class="navbar-section">
         <slot name="logo">
-          <router-link :to="'/'" class="hide-on-small logo-link" :alt="'Home'" :title="'Home'">
-            <img src="/images/index/logo@2x.png" alt="logo" srcset="" class="logo" />
-          </router-link>
+          <div class="header-left">
+            <router-link :to="'/'" class="hide-on-small logo-link" :alt="'Home'" :title="'Home'">
+              <img src="/images/index/logo@2x.png" alt="logo" srcset="" class="logo" />
+            </router-link>
+            <div class="header-search" v-show="showSearch">
+              <mises-search />
+            </div>
+          </div>
         </slot>
         <div class="right-nav-link">
           <div v-for="(link, lid) in links" :key="`link-${lid}`" class="nav-link">
@@ -41,6 +46,7 @@
 <script lang="ts">
 import { defineComponent, PropType } from 'vue'
 import { SpSystemBar } from '@starport/vue'
+import MisesSearch from '../MisesSearch/MisesSearch.vue'
 
 export interface NavbarLink {
   name: string
@@ -52,7 +58,7 @@ export default defineComponent({
   name: 'SpNavbar',
 
   components: {
-    SpSystemBar
+    SpSystemBar, MisesSearch
   },
 
   props: {
@@ -68,6 +74,9 @@ export default defineComponent({
   computed:{
     activeRouteName(){
       return this.activeRoute==='/' ? '/portfolio' : this.activeRoute
+    },
+    showSearch(){
+      return !['/', '/portfolio'].includes(this.$route.path)
     }
   },
 })
@@ -90,6 +99,9 @@ $height: 80px;
   justify-content: space-between;
   height: $height;
   align-content: center;
+  width: 1200px;
+  margin: 0 auto;
+  max-width: 90%;
   .right-nav-link {
     display: flex;
     align-items: center;
@@ -190,6 +202,11 @@ $height: 80px;
   margin-left: 5px;
   transition: all 0.3s;
 }
+.header-left{
+  display: flex;
+  align-items: center;
+}
+
 @media (max-width: 600px) {
   .hide-on-small {
     display: none;
@@ -201,6 +218,24 @@ $height: 80px;
   }
   .link-list-container{
     height: $height;
+  }
+}
+@media (max-width: 768px) {
+  .header-search{
+    display: none;
+  }
+}
+</style>
+<style lang="scss">
+.header-search{
+  margin:0 10px;
+  .search{
+    height: 36px;
+    input{
+      width: 28vw;
+      max-width: 400px;
+      border: 1px solid #eee
+    }
   }
 }
 </style>
