@@ -4,39 +4,39 @@
     <div class="navbar-wrapper">
       <div class="navbar-section">
         <slot name="logo">
-          <div class="header-left">
-            <router-link :to="'/'" class="hide-on-small logo-link" :alt="'Home'" :title="'Home'">
-              <img src="/images/index/logo@2x.png" alt="logo" srcset="" class="logo" />
-            </router-link>
-            <div class="header-search" v-show="showSearch">
-              <mises-search />
-            </div>
-          </div>
+          <router-link :to="'/'" class="hide-on-small logo-link" :alt="'Home'" :title="'Home'">
+            <img src="/images/index/logo@2x.png" alt="logo" srcset="" class="logo" />
+          </router-link>
         </slot>
-        <div class="right-nav-link">
-          <div v-for="(link, lid) in links" :key="`link-${lid}`" class="nav-link">
-            <router-link v-if="!link.children" :to="link.url" class="sp-nav-link" :alt="link.name" :title="link.name">
-              <div :class="link.url === activeRouteName ? 'link-active' : ''">
-                {{ link.name }}
-              </div>
-            </router-link>
-
-            <div v-if="link.children" class="link-list-container">
-              <div class="flex">
-                <span class="sp-nav-link" :class="link.children.some((val) => val.url === activeRouteName) ? 'link-active' : ''">
+        <div class="header-left">
+          <div class="header-search" v-show="showSearch">
+            <mises-search />
+          </div>
+          <div class="right-nav-link">
+            <div v-for="(link, lid) in links" :key="`link-${lid}`" class="nav-link">
+              <router-link v-if="!link.children" :to="link.url" class="sp-nav-link" :alt="link.name" :title="link.name">
+                <div :class="link.url === activeRouteName ? 'link-active' : ''">
                   {{ link.name }}
-                </span>
-                <img src="/images/index/down_black@2x.png" alt="" class="downblock" />
-              </div>
-              <div class="link-list">
-                <router-link v-for="(item, id) in link.children" :key="`link-item-${id}`" :to="item.url" :alt="item.name" :title="item.name">
-                  <div :class="item.url === activeRouteName ? 'link-active' : ''">
-                    {{ item.name }}
-                  </div>
-                </router-link>
+                </div>
+              </router-link>
+
+              <div v-if="link.children" class="link-list-container">
+                <div class="flex">
+                  <span class="sp-nav-link" :class="link.children.some((val) => val.url === activeRouteName) ? 'link-active' : ''">
+                    {{ link.name }}
+                  </span>
+                  <img src="/images/index/down_black@2x.png" alt="" class="downblock" />
+                </div>
+                <div class="link-list">
+                  <router-link v-for="(item, id) in link.children" :key="`link-item-${id}`" :to="item.url" :alt="item.name" :title="item.name">
+                    <div :class="item.url === activeRouteName ? 'link-active' : ''">
+                      {{ item.name }}
+                    </div>
+                  </router-link>
+                </div>
               </div>
             </div>
-          </div>
+        </div>
         </div>
       </div>
     </div>
@@ -228,7 +228,7 @@ $height: 80px;
 </style>
 <style lang="scss">
 .header-search{
-  margin:0 10px;
+  margin:0 50px 0 20px;
   .search{
     height: 36px;
     input{
