@@ -4,7 +4,7 @@
       <div class="content flex">
         <router-link to="/">
           <img src='/images/index/logo_bottom@2x.png' alt="" class="logo"/>
-          <p class="logo-title">Decentralized social media</p>
+          <p class="logo-title">Fast & Secure & Extension-loadable</p>
         </router-link>
         <div class="center-content flex">
           <div>
@@ -20,10 +20,10 @@
               <img src="/images/index/GooglePlay@2x.png" alt="" >
               <span>Android</span>
             </a>
-            <!-- <a href="https://testflight.apple.com/join/Tk1BxD1i" target="_blank"  class="flex btn store">
+            <a href="https://apps.apple.com/us/app/mises-browser/id6451129542" target="_blank"  class="flex btn store">
               <img src="/images/index/iOS@2x.png" alt="" >
               <span>iOS</span>
-            </a> -->
+            </a>
           </div>
         </div>
         <div class="icons">
@@ -96,13 +96,14 @@ $icons: twitter,facebook,instagram,youtube,github,linkedin,reddit,telegram,disco
   background-color: #111115;
   padding: 20px 0;
   .logo{
-    width: 122px;
+    width: 200px;
+    margin-top: 10px;
   }
   .logo-title{
     font-size: 16px;
     font-family: 'hlt-45';
     color: #FFFFFF;
-    margin-top: 12px;
+    margin: 12px 0;
   }
 }
 .icons{
@@ -118,7 +119,7 @@ $icons: twitter,facebook,instagram,youtube,github,linkedin,reddit,telegram,disco
   font-size: 16px;
   font-family: 'hlt-45';
   color: #FFFFFF;
-  margin-top: 12px;
+  margin: 12px 0;
 }
 @media (max-width: 768px) {
   .content{
